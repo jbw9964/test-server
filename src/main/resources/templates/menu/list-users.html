@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<table border="1">
+  <tr>
+    <th>ID</th>
+    <th>Username</th>
+  </tr>
+
+  <tr th:each="user : ${userList}">
+    <td th:text="${user.id}">0</td>
+    <td th:text="${user.username}">username</td>
+  </tr>
+
+</table>
+
+<hr>
+<br>
+
+<form action="/menu/user-list" method="post">
+  <label>
+    <input type="text" name="username">
+  </label>
+  <input type="submit">
+</form>
+
+</body>
+</html>
