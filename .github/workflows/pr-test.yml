@@ -21,7 +21,7 @@ jobs:
           tree -af
 
       - name: Create application-test-profile.properties from secret
-        uses: ./composite/add-secret-profile.yml
+        uses: ./.github/actions/composite/add-secret-profile.yml
         with:
           secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
           resource_dir: "src/main/resources"
@@ -34,7 +34,7 @@ jobs:
 
       - name: Attempt to create duplicates
         id: check1
-        uses: ./composite/add-secret-profile.yml
+        uses: ./.github/actions/composite/add-secret-profile.yml
         with:
           secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
           resource_dir: "src/main/resources"
