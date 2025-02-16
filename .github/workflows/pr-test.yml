@@ -1,0 +1,42 @@
+
+name: test `create profiles` on pr
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: echo pwd & tree
+        run: |
+          echo $PWD
+          tree -af
+
+      - name: Create application-test-profile.properties from secret
+        uses: ./composite/add-secret-profile.yml
+        with:
+          secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+          resource_dir: "src/main/resources"
+          profile_name: "test-profile"
+
+      - name: echo pwd & tree
+        run: |
+          echo $PWD
+          tree -af
+
+      - name: Check whether error occurs
+        uses: ./composite/add-secret-profile.yml
+        with:
+          secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+          resource_dir: "src/main/resources"
+          profile_name: "test-profile"
+        if: !failure()
+        run: exit 1
