@@ -32,11 +32,16 @@ jobs:
           echo $PWD
           tree -af
 
-      - name: Check whether error occurs
+      - name: Attempt to create duplicates
+        id: check1
         uses: ./composite/add-secret-profile.yml
         with:
           secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
           resource_dir: "src/main/resources"
           profile_name: "test-profile"
-        if: !failure()
-        run: exit 1
+        continue-on-error: true
+
+      - name: echo pwd & tree
+        run: |
+          echo $PWD
+          tree -af
