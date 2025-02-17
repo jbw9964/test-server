@@ -18,25 +18,15 @@ runs:
   using: 'composite'
 
   steps:
-    - name: Setup environment variables
-      shell: bash
-      run: |
-        echo "::add-mask::${{ inputs.secret_from_repo }}"
-        echo "SECRET=${{ inputs.secret_from_repo }}" >> $GITHUB_ENV
-        echo "FILE_DIR=${{ inputs.file_dir }}" >> $GITHUB_ENV
-        echo "FILE_PATH=${{ inputs.file_dir }}/${{ inputs.file_name }}" >> $GITHUB_ENV
-
     - name: Check whether duplicate exists
       shell: bash
       run: |
-        echo "::add-mask::${{ inputs.secret_from_repo }}"
-        if [ -f "$FILE_PATH" ]; then
+        if [ -f "${{ inputs.file_dir }}" ]; then
           exit 1
         fi
 
     - name: Store secret
       shell: bash
       run: |
-        echo "::add-mask::${{ inputs.secret_from_repo }}"
-        mkdir -p "$FILE_DIR"
-        echo "$SECRET" > "$FILE_PATH"
+        mkdir -p "${{ inputs.file_dir }}"
+        echo "${{ inputs.file_dir }}" > "${{ inputs.file_dir }}/${{ inputs.file_name }}"
