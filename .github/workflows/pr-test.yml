@@ -18,10 +18,10 @@ jobs:
       - name: echo pwd & tree
         run: |
           echo $PWD
-          tree -af
+          tree -f
 
       - name: Create application-test-profile.properties from secret
-        uses: ./.github/actions/composite/add-secret-profile.yml
+        uses: ./.github/workflows/composite/create-profile/add-secret-profile
         with:
           secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
           resource_dir: "src/main/resources"
@@ -30,11 +30,11 @@ jobs:
       - name: echo pwd & tree
         run: |
           echo $PWD
-          tree -af
+          tree -f
 
       - name: Attempt to create duplicates
         id: check1
-        uses: ./.github/actions/composite/add-secret-profile.yml
+        uses: ./.github/workflows/composite/create-profile/add-secret-profile
         with:
           secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
           resource_dir: "src/main/resources"
@@ -44,4 +44,4 @@ jobs:
       - name: echo pwd & tree
         run: |
           echo $PWD
-          tree -af
+          tree -f

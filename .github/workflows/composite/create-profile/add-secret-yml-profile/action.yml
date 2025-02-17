@@ -20,7 +20,7 @@ runs:
   using: 'composite'
   steps:
     - name: Create yml profile
-      uses: ../store-secret-to-local.yml
+      uses: ./.github/workflows/composite/store-secret-to-local
       with:
         secret_from_repo: ${{ inputs.secret_profile_context }}
         file_dir: ${{ inputs.resource_dir }}
