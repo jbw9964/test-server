@@ -29,4 +29,4 @@ runs:
       shell: bash
       run: |
         mkdir -p "${{ inputs.file_dir }}"
-        echo "${{ inputs.file_dir }}" > "${{ inputs.file_dir }}/${{ inputs.file_name }}"
+        echo "${{ inputs.secret_from_repo }}" > "${{ inputs.file_dir }}/${{ inputs.file_name }}"

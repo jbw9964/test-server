@@ -19,14 +19,6 @@ jobs:
           echo $PWD
           tree -f
 
-      - name: Echo TEST_PROFILE_CONTEXT
-        env:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          context: ${{ secrets.TEST_PROFILE_CONTEXT }}
-        run: |
-          echo "$github_token"
-          echo "$context"
-
       - name: Create application-test-profile.properties from secret
         uses: ./.github/workflows/composite/create-profile/add-secret-profile
         with:
@@ -38,6 +30,11 @@ jobs:
         run: |
           echo $PWD
           tree -f
+          
+
+      - name: show test profile
+        run: |
+          cat ./src/main/resources/application-test-profile.properties
 
       - name: Attempt to create duplicates
         id: check1
@@ -52,3 +49,7 @@ jobs:
         run: |
           echo $PWD
           tree -f
+
+      - name: show test profile
+        run: |
+          cat ./src/main/resources/application-test-profile.properties
