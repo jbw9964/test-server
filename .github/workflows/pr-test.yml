@@ -1,4 +1,3 @@
-
 name: test `create profiles` on pr
 
 on:
@@ -19,6 +18,14 @@ jobs:
         run: |
           echo $PWD
           tree -f
+
+      - name: Echo TEST_PROFILE_CONTEXT
+        env:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+        run: |
+          echo "$github_token"
+          echo "context"
 
       - name: Create application-test-profile.properties from secret
         uses: ./.github/workflows/composite/create-profile/add-secret-profile
