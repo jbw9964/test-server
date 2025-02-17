@@ -29,6 +29,7 @@ runs:
     - name: Check whether duplicate exists
       shell: bash
       run: |
+        echo "::add-mask::${{ inputs.secret_from_repo }}"
         if [ -f "$FILE_PATH" ]; then
           exit 1
         fi
@@ -36,5 +37,6 @@ runs:
     - name: Store secret
       shell: bash
       run: |
+        echo "::add-mask::${{ inputs.secret_from_repo }}"
         mkdir -p "$FILE_DIR"
         echo "$SECRET" > "$FILE_PATH"
