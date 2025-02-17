@@ -24,6 +24,6 @@ runs:
     - name: Create yml profile
       uses: ./.github/workflows/composite/store-secret-to-local
       with:
-        secret_from_repo: ${{ inputs.secret_profile_context }}
-        file_dir: ${{ inputs.resource_dir }}
-        file_name: application-${{ inputs.profile_name }}.yml
+        secret_from_repo: ${{ github.event.inputs.secret_profile_context }}
+        file_dir: ${{ github.event.inputs.resource_dir }}
+        file_name: application-${{ github.event.inputs.profile_name }}.yml

@@ -17,9 +17,9 @@ on:
         description: "secret.txt, application-prod.yml, etc"
 
 env:
-  SECRET: ${{ inputs.secret_from_repo }}
-  FILE_DIR: ${{ inputs.file_dir }}
-  FILE_PATH: ${{ inputs.file_dir }}/${{ inputs.file_name }}
+  SECRET: ${{ github.event.inputs.secret_from_repo }}
+  FILE_DIR: ${{ github.event.inputs.file_dir }}
+  FILE_PATH: ${{ github.event.inputs.file_dir }}/${{ github.event.inputs.file_name }}
 
 runs:
   using: 'composite'
