@@ -1,18 +1,20 @@
 name: Store Secret
 
-inputs:
-  secret_from_repo:
-    required: true
-    type: string
-    description: "A secret profile in application. ( secrets.??? )"
-  file_dir:
-    required: true
-    type: string
-    description: "./, ./"
-  file_name:
-    required: true
-    type: string
-    description: "secret.txt, application-prod.yml, etc"
+on:
+  workflow_dispatch:
+    inputs:
+      secret_from_repo:
+        required: true
+        type: string
+        description: "A secret profile in application. ( secrets.??? )"
+      file_dir:
+        required: true
+        type: string
+        description: "./, ./"
+      file_name:
+        required: true
+        type: string
+        description: "secret.txt, application-prod.yml, etc"
 
 env:
   SECRET: ${{ inputs.secret_from_repo }}
