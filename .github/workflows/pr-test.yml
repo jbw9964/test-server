@@ -25,7 +25,7 @@ jobs:
           context: ${{ secrets.TEST_PROFILE_CONTEXT }}
         run: |
           echo "$github_token"
-          echo "context"
+          echo "$context"
 
       - name: Create application-test-profile.properties from secret
         uses: ./.github/workflows/composite/create-profile/add-secret-profile
