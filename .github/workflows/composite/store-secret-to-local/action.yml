@@ -14,11 +14,6 @@ inputs:
     type: string
     description: 'secret.txt, application-prod.yml, etc'
 
-env:
-  SECRET: ${{ inputs.secret_from_repo }}
-  FILE_DIR: ${{ inputs.file_dir }}
-  FILE_PATH: ${{ inputs.file_dir }}/${{ inputs.file_name }}
-
 runs:
   using: 'composite'
 
@@ -29,7 +24,6 @@ runs:
         echo "SECRET=${{ inputs.secret_from_repo }}" >> $GITHUB_ENV
         echo "FILE_DIR=${{ inputs.file_dir }}" >> $GITHUB_ENV
         echo "FILE_PATH=${{ inputs.file_dir }}/${{ inputs.file_name }}" >> $GITHUB_ENV
-
 
     - name: Check whether duplicate exists
       shell: bash
