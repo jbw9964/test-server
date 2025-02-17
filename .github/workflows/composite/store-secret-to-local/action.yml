@@ -21,6 +21,7 @@ runs:
     - name: Setup environment variables
       shell: bash
       run: |
+        echo "::add-mask::${{ inputs.secret_from_repo }}"
         echo "SECRET=${{ inputs.secret_from_repo }}" >> $GITHUB_ENV
         echo "FILE_DIR=${{ inputs.file_dir }}" >> $GITHUB_ENV
         echo "FILE_PATH=${{ inputs.file_dir }}/${{ inputs.file_name }}" >> $GITHUB_ENV
