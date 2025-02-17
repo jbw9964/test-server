@@ -1,25 +1,23 @@
 name: Store Secret
 
-on:
-  workflow_dispatch:
-    inputs:
-      secret_from_repo:
-        required: true
-        type: string
-        description: "A secret profile in application. ( secrets.??? )"
-      file_dir:
-        required: true
-        type: string
-        description: "./, ./"
-      file_name:
-        required: true
-        type: string
-        description: "secret.txt, application-prod.yml, etc"
+inputs:
+  secret_from_repo:
+    required: true
+    type: string
+    description: 'A secret profile in application. ( secrets.??? )'
+  file_dir:
+    required: true
+    type: string
+    description: ''./, ./'
+  file_name:
+    required: true
+    type: string
+    description: 'secret.txt, application-prod.yml, etc'
 
 env:
-  SECRET: ${{ github.event.inputs.secret_from_repo }}
-  FILE_DIR: ${{ github.event.inputs.file_dir }}
-  FILE_PATH: ${{ github.event.inputs.file_dir }}/${{ github.event.inputs.file_name }}
+  SECRET: ${{ inputs.secret_from_repo }}
+  FILE_DIR: ${{ inputs.file_dir }}
+  FILE_PATH: ${{ inputs.file_dir }}/${{ inputs.file_name }}
 
 runs:
   using: 'composite'

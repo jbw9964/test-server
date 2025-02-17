@@ -1,22 +1,20 @@
 name: Add Secret YML Profile
-description: "Create profile at [ resource_dir ]/application-[ profile_name ].yml with [ secret_profile_context ]"
+description: 'Create profile at [ resource_dir ]/application-[ profile_name ].yml with [ secret_profile_context ]'
 
-on:
-  workflow_dispatch:
-    inputs:
-      secret_profile_context:
-        required: true
-        type: string
-        description: "A secret profile in application. ( secrets.??? )"
-      resource_dir:
-        required: true
-        type: string
-        default: "/src/main/java/resources"
-        description: "/src/main/java/resources"
-      profile_name:
-        required: true
-        type: string
-        description: "local-dev, test-server, etc"
+inputs:
+  secret_profile_context:
+    required: true
+    type: string
+    description: 'A secret profile in application. ( secrets.??? )'
+  resource_dir:
+    required: true
+    type: string
+    default: '/src/main/java/resources'
+    description: /src/main/java/resources'
+  profile_name:
+    required: true
+    type: string
+    description: 'local-dev, test-server, etc'
 
 runs:
   using: 'composite'
@@ -24,6 +22,6 @@ runs:
     - name: Create yml profile
       uses: ./.github/workflows/composite/store-secret-to-local
       with:
-        secret_from_repo: ${{ github.event.inputs.secret_profile_context }}
-        file_dir: ${{ github.event.inputs.resource_dir }}
-        file_name: application-${{ github.event.inputs.profile_name }}.yml
+        secret_from_repo: ${{ inputs.secret_profile_context }}
+        file_dir: ${{ inputs.resource_dir }}
+        file_name: application-${{ inputs.profile_name }}.yml

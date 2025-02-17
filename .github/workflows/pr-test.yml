@@ -24,8 +24,8 @@ jobs:
         uses: ./.github/workflows/composite/create-profile/add-secret-profile
         with:
           secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
-          resource_dir: "src/main/resources"
-          profile_name: "test-profile"
+          resource_dir: 'src/main/resources'
+          profile_name: 'test-profile'
 
       - name: echo pwd & tree
         run: |
@@ -37,8 +37,8 @@ jobs:
         uses: ./.github/workflows/composite/create-profile/add-secret-profile
         with:
           secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
-          resource_dir: "src/main/resources"
-          profile_name: "test-profile"
+          resource_dir: 'src/main/resources'
+          profile_name: 'test-profile'
         continue-on-error: true
 
       - name: echo pwd & tree
