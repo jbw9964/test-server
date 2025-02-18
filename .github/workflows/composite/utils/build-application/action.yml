@@ -8,6 +8,15 @@ inputs:
     default: './'
     description: 'A directory where gradlew exists'
 
+  java_version:
+    required: true
+    default: 17
+    description: 'JDK version'
+  distribution:
+    required: true
+    default: 'temurin'
+    description: 'JDK distribution'
+
 runs:
   using: composite
 
@@ -24,33 +33,43 @@ runs:
       shell: bash
       run: chmod +x ${{ inputs.working_dir }}gradlew
 
-    - name: Cache gradle
+    - name: Cache gradle & JDK
       uses: actions/cache@v4
-      id: cache-gradle
+      id: cache
       with:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: ${{ runner.os }}-gradle-
+          /opt/hostedtoolcache
+        key: ${{ runner.os }}-jdk-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '/opt/hostedtoolcache/Java_**') }}
 
-    - name: Cache JDK 17
-      uses: actions/cache@v4
-      id: cache-jdk-17
-      with:
-        path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.*/x64
-        key: ${{ runner.os }}-jdk-17
-        restore-keys: ${{ runner.os }}-jdk-17
+#    - name: Cache gradle
+#      uses: actions/cache@v4
+#      id: cache-gradle
+#      with:
+#        path: |
+#          ~/.gradle/caches
+#          ~/.gradle/wrapper
+#        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+#        restore-keys: ${{ runner.os }}-gradle-
+#
+#    - name: Cache JDK 17
+#      uses: actions/cache@v4
+#      id: cache-jdk-17
+#      with:
+#        path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.*/x64
+#        key: ${{ runner.os }}-jdk-17
+#        restore-keys: ${{ runner.os }}-jdk-17
 
     - name: Setup JDK 17 if no cache exists
       uses: actions/setup-java@v4
-      if: steps.cache-jdk-17.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true'
       with:
         java-version: 17
         distribution: 'temurin'
 
     - name: Build if no gradle cache exists
-      if: steps.cache-gradle.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
         echo "No gradle found via cache. Running gradlew build..."
