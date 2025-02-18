@@ -37,4 +37,3 @@ jobs:
         with:
           show_all: 'true'
           show_full_path: 'true'
-          working_dir: './src'
