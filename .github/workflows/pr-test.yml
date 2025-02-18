@@ -1,0 +1,29 @@
+
+name: test reusable workflows
+
+on:
+  pull_request:
+    - main
+    - develop
+
+jobs:
+  call-echo-given-hello:
+    uses: ./.github/workflows/echo-given.yml
+    with:
+      context: 'Hello world!'
+
+  call-sleep:
+    uses: ./.github/workflows/sleep.yml
+    with:
+      sec: '20'
+
+  call-echo-given-goodbye:
+    uses: ./.github/workflows/echo-given.yml
+    with:
+      context: 'Goodbye world!'
+
+  call-checkout-and-show-tree:
+    uses: ./.github/workflows/sleep.yml
+    needs:
+      - call-echo-given-hello
+      - call-sleep

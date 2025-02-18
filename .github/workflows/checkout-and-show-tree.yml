@@ -1,0 +1,20 @@
+
+name: Checkout and show tree
+
+on:
+  workflow_call:
+
+jobs:
+  reusable_workflow_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      - name: Show tree
+        uses: ./.github/workflows/composite/utils/show-tree
+        with:
+          show_all: 'true'
+

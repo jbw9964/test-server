@@ -1,0 +1,23 @@
+
+name: echo given
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        required: true
+
+jobs:
+  test-echo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: echo!
+        run: |
+          echo ${{ inputs.context }}
+
+      - name: echo twice!
+        run: |
+          echo twice
+          echo ${{ inputs.context }}
+          echo ${{ inputs.context }}
