@@ -3,8 +3,9 @@ name: test reusable workflows
 
 on:
   pull_request:
-    - main
-    - develop
+    branches:
+      - main
+      - develop
 
 jobs:
   call-echo-given-hello:
