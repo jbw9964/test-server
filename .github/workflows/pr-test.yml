@@ -14,47 +14,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: echo pwd & tree
-        run: |
-          echo $PWD
-          tree -f
+      - name: Show tree structure
+        uses: ./.github/workflows/composite/utils/show-tree
+        with:
+          show_all: 'true'
+          show_full_path: 'true'
 
       - name: Create application-test-profile.properties from secret
-        uses: ./.github/workflows/composite/create-profile/add-secret-profile
+        uses: ./.github/workflows/composite/utils/save-to-file
         with:
-          secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
-          resource_dir: 'src/main/resources'
-          profile_name: 'test-profile'
+          arg: ${{ secrets.TEST_PROFILE_CONTEXT }}
+          file_dir: './src/main/resources'
+          file_name: 'application-test-profile.properties'
 
-      - name: echo pwd & tree
-        run: |
-          echo $PWD
-          tree -f
+      - name: Re-checkout repository
+        uses: actions/checkout@v4
 
-      - name: upload test profile 1
-        uses: actions/upload-artifact@v4
+      - name: Show tree structure
+        uses: ./.github/workflows/composite/utils/show-tree
         with:
-          name: 'test-profile-1'
-          if-no-files-found: 'error'
-          path: './src/main/resources/application-test-profile.properties'
+          show_all: 'true'
+          show_full_path: 'true'
+        working-directory: './src'
+
 
       - name: Attempt to create duplicates
-        id: check1
-        uses: ./.github/workflows/composite/create-profile/add-secret-profile
+        uses: ./.github/workflows/composite/utils/save-to-file
         with:
-          secret_profile_context: ${{ secrets.TEST_PROFILE_CONTEXT }}
-          resource_dir: 'src/main/resources'
-          profile_name: 'test-profile'
-        continue-on-error: true
-
-      - name: echo pwd & tree
-        run: |
-          echo $PWD
-          tree -f
-
-      - name: upload test profile 2
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'test-profile-2'
-          if-no-files-found: 'error'
-          path: './src/main/resources/application-test-profile.properties'
+          arg: ${{ secrets.TEST_PROFILE_CONTEXT }}
+          file_dir: './src/main/resources'
+          file_name: 'application-test-profile.properties'
