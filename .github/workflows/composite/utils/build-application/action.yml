@@ -41,7 +41,7 @@ runs:
         distribution: 'temurin'
 
     - name: Build if no gradle cache exists
-      if: steps.gradle-cache.outputs.cache-hit != 'true'
+      if: steps.cache-gradle.outputs.cache-hit != 'true'
       shell: bash
       run: |
         echo "No gradle found via cache. Running gradlew build..."
