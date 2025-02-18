@@ -65,8 +65,8 @@ runs:
       uses: actions/setup-java@v4
       if: steps.cache.outputs.cache-hit != 'true'
       with:
-        java-version: 17
-        distribution: 'temurin'
+        java-version: ${{ inputs.java_version }}
+        distribution: ${{ inputs.distribution }}
 
     - name: Build if no gradle cache exists
       if: steps.cache.outputs.cache-hit != 'true'
