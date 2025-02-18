@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create application-test-profile.properties from secret
-        uses: ./.github/workflows/composite/utils/save-to-file
+        uses: ./.github/workflows/composite/utils/save-given-to-file
         with:
           arg: ${{ secrets.TEST_PROFILE_CONTEXT }}
           file_dir: './src/main/resources'
@@ -27,8 +27,10 @@ jobs:
           show_all: 'true'
           show_full_path: 'true'
 
-      - name: Re-checkout repository
-        uses: actions/checkout@v4
+      - name: Build application
+        uses: ./.github/workflows/composite/utils/build-application
+        with:
+          working_dir: './'
 
       - name: Show tree structure
         uses: ./.github/workflows/composite/utils/show-tree
@@ -36,10 +38,3 @@ jobs:
           show_all: 'true'
           show_full_path: 'true'
           working_dir: './src'
-
-      - name: Attempt to create duplicates
-        uses: ./.github/workflows/composite/utils/save-to-file
-        with:
-          arg: ${{ secrets.TEST_PROFILE_CONTEXT }}
-          file_dir: './src/main/resources'
-          file_name: 'application-test-profile.properties'

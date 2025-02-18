@@ -1,0 +1,43 @@
+name: Build application
+
+description: 'Build application via gradlew'
+
+inputs:
+  working_dir:
+    required: true
+    default: './'
+    description: 'A directory where gradlew exists'
+
+runs:
+  using: composite
+
+  steps:
+    - name: Check whether gradlew exists
+      run: |
+        if [ ! -f ${{ inputs.working_dir }}/.gradlew ]; then
+          echo 
+        fi
+
+    - name: Change gradlew permission
+      run: chmod +x ${{ inputs.working_dir }}/.gradlew
+
+    - name: Cache gradle
+      uses: actions/cache@v4
+      id: gradle-cache
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: ${{ runner.os }}-gradle-
+
+    - name: Setup JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'temurin'
+
+    - name: Build if no gradle cache exists
+      if: steps.gradle-cache.outputs.cache-hit != 'true'
+      run:
+        ${{ inputs.working_dir }}/.gradlew build -x test

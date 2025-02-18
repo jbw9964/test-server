@@ -1,6 +1,6 @@
 name: Show tree structure
 
-description: 'Show all directories and files with tree command.'
+description: 'Show sub directories and files within [ working_dir ] via tree command.'
 
 inputs:
   working_dir:
