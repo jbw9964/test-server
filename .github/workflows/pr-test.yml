@@ -16,7 +16,7 @@ jobs:
   call-sleep:
     uses: ./.github/workflows/sleep.yml
     with:
-      sec: '20'
+      sec: 20
 
   call-echo-given-goodbye:
     uses: ./.github/workflows/echo-given.yml
