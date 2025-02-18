@@ -35,8 +35,7 @@ jobs:
         with:
           show_all: 'true'
           show_full_path: 'true'
-        working-directory: './src'
-
+          working_dir: './src'
 
       - name: Attempt to create duplicates
         uses: ./.github/workflows/composite/utils/save-to-file

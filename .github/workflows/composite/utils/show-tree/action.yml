@@ -3,6 +3,11 @@ name: Show tree structure
 description: 'Show all directories and files with tree command.'
 
 inputs:
+  working_dir:
+    required: false
+    default: './'
+    description: 'Directory where tree command should run'
+
   show_all:
     required: false
     default: 'false'
@@ -20,6 +25,9 @@ runs:
     - name: Show tree structure
       shell: bash
       run: |
+        echo "Change directory to ${{ inputs.working_dir }}"
+        cd ${{ inputs.working_dir }}
+        
         OPTIONS=""
         if [[ "${{ inputs.show_all }}" == "true" ]]; then
           OPTIONS="$OPTIONS -a"
