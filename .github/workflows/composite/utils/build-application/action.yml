@@ -26,11 +26,11 @@ runs:
 
     - name: Cache gradle
       uses: actions/cache@v4
-      id: gradle-cache
+      id: cache-gradle
       with:
         path: |
-          ${{ inputs.working_dir }}.gradle/caches
-          ${{ inputs.working_dir }}.gradle/wrapper
+          ~/.gradle/caches
+          ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle-
 
