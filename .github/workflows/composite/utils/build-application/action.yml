@@ -12,6 +12,7 @@ inputs:
     required: true
     default: 17
     description: 'JDK version'
+
   distribution:
     required: true
     default: 'temurin'
@@ -50,7 +51,7 @@ runs:
         distribution: ${{ inputs.distribution }}
 
     - name: Build if no gradle cache found
-      if: steps.cache-gradle.outputs.cache-hit != 'true'
+      if: step.cache-gradle.outputs.cache-hit != 'true'
       shell: bash
       run: |
         echo "No gradle found via cache. Running gradlew build..."
