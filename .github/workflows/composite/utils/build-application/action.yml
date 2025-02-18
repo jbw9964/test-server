@@ -29,10 +29,8 @@ runs:
       id: gradle-cache
       with:
         path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-#          ${{ inputs.working_dir }}.gradle/caches
-#          ${{ inputs.working_dir }}.gradle/wrapper
+          ${{ inputs.working_dir }}.gradle/caches
+          ${{ inputs.working_dir }}.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle-
 
