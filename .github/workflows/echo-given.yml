@@ -6,6 +6,7 @@ on:
     inputs:
       context:
         required: true
+        type: string
 
 jobs:
   test-echo:
