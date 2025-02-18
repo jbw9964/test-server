@@ -9,22 +9,35 @@ on:
 
 jobs:
   call-echo-given-hello:
-    uses: ./.github/workflows/echo-given.yml
+    uses: ./.github/workflows/reusable/echo-given.yml
     with:
       context: 'Hello world!'
 
   call-sleep:
-    uses: ./.github/workflows/sleep.yml
+    uses: ./.github/workflows/reusable/sleep.yml
     with:
       sec: 15
 
   call-echo-given-goodbye:
-    uses: ./.github/workflows/echo-given.yml
+    uses: ./.github/workflows/reusable/echo-given.yml
     with:
       context: 'Goodbye world!'
 
   call-checkout-and-show-tree:
-    uses: ./.github/workflows/checkout-and-show-tree.yml
+    uses: ./.github/workflows/reusable/checkout-and-show-tree.yml
     needs:
       - call-echo-given-hello
       - call-sleep
+
+  hooray:
+    runs-on: ubuntu-latest
+
+    needs:
+      - call-echo-given-hello
+      - call-sleep
+      - call-echo-given-goodbye
+      - call-checkout-and-show-tree
+
+    steps:
+      - name: Hooray it works!
+        run: echo "Hooray!!!!!"
