@@ -13,12 +13,14 @@ runs:
 
   steps:
     - name: Check whether gradlew exists
+      shell: bash
       run: |
         if [ ! -f ${{ inputs.working_dir }}/.gradlew ]; then
           echo 
         fi
 
     - name: Change gradlew permission
+      shell: bash
       run: chmod +x ${{ inputs.working_dir }}/.gradlew
 
     - name: Cache gradle
@@ -28,6 +30,8 @@ runs:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
+#          ${{ inputs.working_dir }}.gradle/caches
+#          ${{ inputs.working_dir }}.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle-
 
@@ -39,5 +43,6 @@ runs:
 
     - name: Build if no gradle cache exists
       if: steps.gradle-cache.outputs.cache-hit != 'true'
+      shell: bash
       run:
         ${{ inputs.working_dir }}/.gradlew build -x test
