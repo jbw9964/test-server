@@ -45,5 +45,6 @@ runs:
     - name: Build if no gradle cache exists
       if: steps.gradle-cache.outputs.cache-hit != 'true'
       shell: bash
-      run:
+      run: |
+        echo "No gradle found via cache. Running gradlew build..."
         ${{ inputs.working_dir }}gradlew build -x test
