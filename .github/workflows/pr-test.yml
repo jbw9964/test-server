@@ -14,18 +14,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show tree structure
-        uses: ./.github/workflows/composite/utils/show-tree
-        with:
-          show_all: 'true'
-          show_full_path: 'true'
-
       - name: Create application-test-profile.properties from secret
         uses: ./.github/workflows/composite/utils/save-to-file
         with:
           arg: ${{ secrets.TEST_PROFILE_CONTEXT }}
           file_dir: './src/main/resources'
           file_name: 'application-test-profile.properties'
+
+      - name: Show tree structure
+        uses: ./.github/workflows/composite/utils/show-tree
+        with:
+          show_all: 'true'
+          show_full_path: 'true'
 
       - name: Re-checkout repository
         uses: actions/checkout@v4
