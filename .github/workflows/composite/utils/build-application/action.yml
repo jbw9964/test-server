@@ -15,14 +15,14 @@ runs:
     - name: Check whether gradlew exists
       shell: bash
       run: |
-        if [ ! -f ${{ inputs.working_dir }}.gradlew ]; then
+        if [ ! -f ${{ inputs.working_dir }}gradlew ]; then
           echo "No gradlew exists on working directory ${{ inputs.working_dir }}"
           exit 1
         fi
 
     - name: Change gradlew permission
       shell: bash
-      run: chmod +x ${{ inputs.working_dir }}.gradlew
+      run: chmod +x ${{ inputs.working_dir }}gradlew
 
     - name: Cache gradle
       uses: actions/cache@v4
@@ -46,4 +46,4 @@ runs:
       if: steps.gradle-cache.outputs.cache-hit != 'true'
       shell: bash
       run:
-        ${{ inputs.working_dir }}.gradlew build -x test
+        ${{ inputs.working_dir }}gradlew build -x test
