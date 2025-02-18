@@ -34,20 +34,17 @@ runs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle-
 
-    - name: Cache JDk 17
-      uses: actions/cache@v4
-      id: cache-jdk-17
-      with:
-        path: ~/.sdkman/candidates/java
-        key: ${{ runner.os }}-adoptopenjdk-${{ hashFiles('**/sdkmanrc') }}
-        restore-keys: ${{ runner.os }}-adoptopenjdk-
-
-    - name: Setup JDK if no cache exists
+    - name: Setup JDK
       uses: actions/setup-java@v4
-      if: steps.cache-jdk-17.outputs.cache-hit != 'true'
       with:
-        java-version: 17
         distribution: 'temurin'
+        check-latest: 'true'
+
+#    - name: Setup JDK 17
+#      uses: actions/setup-java@v4
+#      with:
+#        java-version: 17
+#        distribution: 'temurin'
 
     - name: Build if no gradle cache exists
       if: steps.cache-gradle.outputs.cache-hit != 'true'
