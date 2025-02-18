@@ -17,7 +17,7 @@ jobs:
       - name: Create application-test-profile.properties from secret
         uses: ./.github/workflows/composite/utils/save-given-to-file
         with:
-          arg: ${{ secrets.TEST_PROFILE_CONTEXT }}
+          context: ${{ secrets.TEST_PROFILE_CONTEXT }}
           file_dir: './src/main/resources'
           file_name: 'application-test-profile.properties'
 
