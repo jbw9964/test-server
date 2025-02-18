@@ -16,7 +16,8 @@ runs:
       shell: bash
       run: |
         if [ ! -f ${{ inputs.working_dir }}.gradlew ]; then
-          echo 
+          echo "No gradlew exists on working directory ${{ inputs.working_dir }}"
+          exit 1
         fi
 
     - name: Change gradlew permission
