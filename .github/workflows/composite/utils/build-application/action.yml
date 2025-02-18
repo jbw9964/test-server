@@ -34,8 +34,17 @@ runs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle-
 
-    - name: Setup JDK 17
+    - name: Cache JDK 17
+      uses: actions/cache@v4
+      id: cache-jdk-17
+      with:
+        path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.*/x64
+        key: ${{ runner.os }}-jdk-17
+        restore-keys: ${{ runner.os }}-jdk-17
+
+    - name: Setup JDK 17 if no cache exists
       uses: actions/setup-java@v4
+      if: steps.cache-jdk-17.outputs.cache-hit != 'true'
       with:
         java-version: 17
         distribution: 'temurin'
