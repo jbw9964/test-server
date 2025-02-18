@@ -16,7 +16,7 @@ jobs:
   call-sleep:
     uses: ./.github/workflows/sleep.yml
     with:
-      sec: 20
+      sec: 15
 
   call-echo-given-goodbye:
     uses: ./.github/workflows/echo-given.yml
@@ -24,7 +24,7 @@ jobs:
       context: 'Goodbye world!'
 
   call-checkout-and-show-tree:
-    uses: ./.github/workflows/sleep.yml
+    uses: ./.github/workflows/checkout-and-show-tree.yml
     needs:
       - call-echo-given-hello
       - call-sleep
