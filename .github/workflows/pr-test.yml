@@ -37,3 +37,6 @@ jobs:
         with:
           show_all: 'true'
           show_full_path: 'true'
+
+      - name: hi
+        run: echo hi
