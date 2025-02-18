@@ -38,3 +38,6 @@ jobs:
           show_all: 'true'
           show_full_path: 'true'
           working_dir: './src'
+
+      - name: hi
+        run: echo hi
