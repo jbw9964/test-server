@@ -8,36 +8,43 @@ on:
       - develop
 
 jobs:
-  call-echo-given-hello:
-    uses: ./.github/workflows/echo-given.yml
-    with:
-      context: 'Hello world!'
-
-  call-sleep:
-    uses: ./.github/workflows/sleep.yml
-    with:
-      sec: 15
-
-  call-echo-given-goodbye:
-    uses: ./.github/workflows/echo-given.yml
-    with:
-      context: 'Goodbye world!'
-
-  call-checkout-and-show-tree:
-    uses: ./.github/workflows/checkout-and-show-tree.yml
-    needs:
-      - call-echo-given-hello
-      - call-sleep
-
-  hooray:
+  build-application-1:
     runs-on: ubuntu-latest
 
-    needs:
-      - call-echo-given-hello
-      - call-sleep
-      - call-echo-given-goodbye
-      - call-checkout-and-show-tree
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: build
+        uses: ./.github/workflows/composite/utils/build-application
+
+  sleep-30-sec:
+    uses: ./.github/workflows/sleep.yml
+    with:
+      sec: 30
+
+  build-application-2:
+    needs: sleep-30-sec
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Hooray it works!
-        run: echo "Hooray!!!!!"
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: build
+        uses: ./.github/workflows/composite/utils/build-application
+
+  build-application-3:
+    needs: build-application-1
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: build
+        uses: ./.github/workflows/composite/utils/build-application
+
+  # what happens if i do this?
+  build-application-4:
+    uses: ./.github/workflows/composite/utils/build-application
