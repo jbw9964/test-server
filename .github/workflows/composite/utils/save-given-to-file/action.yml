@@ -1,0 +1,33 @@
+name: Save given context to local
+
+description: 'Save given context to local. It will be saved as [ file_dir/file_name ]'
+
+inputs:
+  context:
+    required: true
+    description: 'A context to save as file'
+
+  file_dir:
+    required: true
+    description: 'A directory to store secret file'
+
+  file_name:
+    required: true
+    description: 'A name of a secret file'
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Check whether duplicate exists
+      shell: bash
+      run: |
+        if [ -f "${{ inputs.file_dir }}/${{ inputs.file_name }}" ]; then
+          exit 1
+        fi
+
+    - name: Save given to destination
+      shell: bash
+      run: |
+        mkdir -p "${{ inputs.file_dir }}"
+        echo "${{ inputs.context }}" > "${{ inputs.file_dir }}/${{ inputs.file_name }}"

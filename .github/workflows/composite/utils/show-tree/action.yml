@@ -1,0 +1,41 @@
+name: Show tree structure
+
+description: 'Show sub directories and files within [ working_dir ] via tree command.'
+
+inputs:
+  working_dir:
+    required: false
+    default: './'
+    description: 'Directory where tree command should run'
+
+  show_all:
+    required: false
+    default: 'false'
+    description: 'Include hidden files and directories'
+
+  show_full_path:
+    required: false
+    default: 'true'
+    description: 'Print full file paths'
+
+runs:
+  using: composite
+
+  steps:
+    - name: Show tree structure
+      shell: bash
+      run: |
+        echo "Change directory to ${{ inputs.working_dir }}"
+        cd ${{ inputs.working_dir }}
+        
+        OPTIONS=""
+        if [[ "${{ inputs.show_all }}" == "true" ]]; then
+          OPTIONS="$OPTIONS -a"
+        fi
+        
+        if [[ "${{ inputs.show_full_path }}" == "true" ]]; then
+          OPTIONS="$OPTIONS -f"
+        fi
+        
+        echo "Running: tree $OPTIONS"
+        tree $OPTIONS
