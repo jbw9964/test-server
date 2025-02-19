@@ -64,6 +64,9 @@ jobs:
       - name: Build application
         uses: ./.github/workflows/composite/utils/build-application
 
+      - name: Show tree structure
+        uses: ./.github/workflows/composite/utils/show-tree
+
       - name: Setup docker buildx
         uses: docker/setup-buildx-action@v3
 
