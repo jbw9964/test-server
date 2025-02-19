@@ -76,8 +76,6 @@ jobs:
 
       - name: Show tree structure
         uses: ./.github/workflows/composite/utils/show-tree
-        with:
-          working_dir: 'src/main/resources'
 
       - name: Create docker metadata
         uses: docker/metadata-action@v5
