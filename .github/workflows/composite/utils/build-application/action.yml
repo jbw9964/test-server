@@ -34,6 +34,10 @@ runs:
       shell: bash
       run: chmod +x ${{ inputs.working_dir }}gradlew
 
+    - name: echo
+      run: |
+        ls -al ~/.gradle
+
     - name: Cache gradle
       uses: actions/cache@v4
       id: cache-gradle
@@ -41,7 +45,8 @@ runs:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          ./build/libs/**
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', './build/libs/**') }}
         restore-keys: ${{ runner.os }}-gradle-
 
     - name: Setup JDK
