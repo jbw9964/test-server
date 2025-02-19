@@ -13,8 +13,9 @@ jobs:
       container-name: 'test-server'
     secrets:
       server-address: ${{ secrets.TEST_SERVER_ADDRESS }}
-      ssh-pw: ${{ secrets.TEST_SERVER_USER }}
-      ssh-user: ${{ secrets.TEST_SERVER_PW }}
+      ssh-user: ${{ secrets.TEST_SERVER_DEV }}
+      ssh-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
+      ssh-key: ${{ secrets.TEST_SERVER_DEV_KEY }}
 
   test-build-docker:
     uses: ./.github/workflows/push-docker-image.yml
