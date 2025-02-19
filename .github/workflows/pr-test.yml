@@ -1,4 +1,3 @@
-
 name: test reusable workflows
 
 on:
@@ -11,6 +10,8 @@ jobs:
   prune-dockers:
     uses: ./.github/workflows/prune-dockers-on-server.yml
     with:
+      container-name: 'test-server'
+    secrets:
       server-address: ${{ secrets.TEST_SERVER_ADDRESS }}
       ssh-pw: ${{ secrets.TEST_SERVER_USER }}
       ssh-user: ${{ secrets.TEST_SERVER_PW }}
@@ -18,12 +19,14 @@ jobs:
   test-build-docker:
     uses: ./.github/workflows/push-docker-image.yml
     with:
+      image-tag: '${{ github.sha }}'
+      profile-name: 'test-profile'
+      property-postfix: 'properties'
+    secrets:
       docker-id: ${{ secrets.DOCKER_ID }}
       docker-pw: ${{ secrets.DOCKER_PW }}
       docker-repo: ${{ secrets.DOCKER_REPO }}
       profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
-      profile-name: 'test-profile'
-      property-postfix: 'properties'
 
   run-docker-on-server:
     uses: ./.github/workflows/run-docker-on-server.yml
