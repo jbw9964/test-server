@@ -95,4 +95,4 @@ jobs:
         with:
           file: ${{ env.file-path }}
           push: 'true'
-          tags: ${{ steps.meta.outputs.tags }},${{ env.base-name }}:${{ env.tag }}
+          tags: ${{ steps.meta.outputs.tags }}
