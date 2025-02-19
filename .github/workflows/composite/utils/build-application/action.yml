@@ -37,7 +37,7 @@ runs:
     - name: echo
       shell: bash
       run: |
-        ls -al ~/.gradle
+        ls -al
 
     - name: Cache gradle
       uses: actions/cache@v4
@@ -49,6 +49,11 @@ runs:
           ./build/libs/**
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', './build/libs/**') }}
         restore-keys: ${{ runner.os }}-gradle-
+
+    - name: echo
+      shell: bash
+      run: |
+        ls -al
 
     - name: Setup JDK
       uses: actions/setup-java@v4
