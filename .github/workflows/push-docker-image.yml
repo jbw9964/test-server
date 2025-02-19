@@ -38,7 +38,7 @@ on:
 
 
 env:
-  base-name: ${{ env.user }}/${{ secrets.docker-repo }}
+  base-name: ${{ secrets.docker-id }}/${{ secrets.docker-repo }}
   tag: ${{ inputs.image-tag }}
   user: ${{ secrets.docker-id }}
   pw: ${{ secrets.docker-pw }}
@@ -94,4 +94,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: 'true'
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }},${{ env.base-name }}:${{ env.tag }}
