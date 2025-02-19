@@ -8,43 +8,25 @@ on:
       - develop
 
 jobs:
-  build-application-1:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v4
-
-      - name: build
-        uses: ./.github/workflows/composite/utils/build-application
-
-  sleep-30-sec:
-    uses: ./.github/workflows/sleep.yml
+  prune-dockers:
+    uses: ./.github/workflows/prune-dockers-on-server.yml
     with:
-      sec: 30
+      server-address: ${{ secrets.TEST_SERVER_ADDRESS }}
+      ssh-pw: ${{ secrets.TEST_SERVER_USER }}
+      ssh-user: ${{ secrets.TEST_SERVER_PW }}
 
-  build-application-2:
-    needs: sleep-30-sec
-    runs-on: ubuntu-latest
+  test-build-docker:
+    uses: ./.github/workflows/push-docker-image.yml
+    with:
+      docker-id: ${{ secrets.DOCKER_ID }}
+      docker-pw: ${{ secrets.DOCKER_PW }}
+      docker-repo: ${{ secrets.DOCKER_REPO }}
+      profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+      profile-name: 'test-profile'
+      property-postfix: 'properties'
 
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v4
-
-      - name: build
-        uses: ./.github/workflows/composite/utils/build-application
-
-  build-application-3:
-    needs: build-application-1
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v4
-
-      - name: build
-        uses: ./.github/workflows/composite/utils/build-application
-
-  # what happens if i do this?
-#  build-application-4:
-#    uses: ./.github/workflows/composite/utils/build-application
+  run-docker-on-server:
+    uses: ./.github/workflows/run-docker-on-server.yml
+    needs:
+      - prune-dockers
+      - test-build-docker

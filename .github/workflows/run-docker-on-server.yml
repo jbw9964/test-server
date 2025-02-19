@@ -1,0 +1,14 @@
+
+name: prev
+
+on:
+  workflow_call:
+
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: echo
+        run: echo ${{ github.job }}

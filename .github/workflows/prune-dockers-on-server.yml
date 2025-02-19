@@ -1,0 +1,77 @@
+name: Prune dockers on server via ssh
+run-name: Prune ${{ inputs.container-name }} on server
+
+# Reusable workflow that prune dockers in server.
+# It will stop docker container named ${{ inputs.container-name }},
+# and remove all dangling images in remote server ${{ inputs.server-address }}
+
+# Usage :
+# jobs:
+#   something:
+#     uses: [ relative path to workflow ]
+#     with:
+#       server-address: [ 0.0.0.0 ]
+#       ssh-user: [ anonymous ]
+#       ssh-pw: [ password ]
+#       container-name: [ container-name ]
+
+on:
+  workflow_call:
+    inputs:
+      server-address:
+        required: true
+        type: string
+        description: "An IP address or domain name of remote server"
+
+      ssh-user:
+        required: true
+        type: string
+        description: "SSH user to login remote server"
+
+      ssh-pw:
+        required: true
+        type: string
+        description: "SSH password to login remote server"
+
+      container-name:
+        type: string
+        default: ${{ github.repository }}
+        description: "A name of docker container to stop in remote server. If no container running on server, it gracefully ignores container and prune everything."
+
+env:
+  host: ${{ inputs.server-address }}
+  user: ${{ inputs.ssh-user }}
+  pw: ${{ inputs.ssh-pw }}
+  container: ${{ inputs.container-name }}
+
+jobs:
+  prune-dockers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Stop container on server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ env.host }}
+          username: ${{ env.user }}
+          password: ${{ env.pw }}
+          script: |
+            docker stop ${{ inputs.container-name }} || true
+
+      - name: Remove container
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ env.host }}
+          username: ${{ env.user }}
+          password: ${{ env.pw }}
+          script: |
+            docker container prune -f
+
+      - name: Remove dangling images
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ env.host }}
+          username: ${{ env.user }}
+          password: ${{ env.pw }}
+          script: |
+            docker image prune -af
