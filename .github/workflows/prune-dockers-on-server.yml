@@ -26,16 +26,12 @@ on:
         required: true
         description: "SSH password to login remote server"
 
-      ssh-key:
-        required: true
-        description: "SSH key to login remote server"
 
 env:
-  container: ${{ inputs.container-name }}
   host: ${{ secrets.server-address }}
   user: ${{ secrets.ssh-user }}
   pw: ${{ secrets.ssh-pw }}
-  key: ${{ secrets.ssh-key }}
+  container: ${{ inputs.container-name }}
 
 jobs:
   prune-dockers:
@@ -48,7 +44,6 @@ jobs:
           host: ${{ env.host }}
           username: ${{ env.user }}
           password: ${{ env.pw }}
-#          key: ${{ env.key }}
           script: |
             docker stop ${{ inputs.container-name }} || true
 
@@ -58,7 +53,6 @@ jobs:
           host: ${{ env.host }}
           username: ${{ env.user }}
           password: ${{ env.pw }}
-#          key: ${{ env.key }}
           script: |
             docker container prune -f
 
@@ -68,6 +62,5 @@ jobs:
           host: ${{ env.host }}
           username: ${{ env.user }}
           password: ${{ env.pw }}
-#          key: ${{ env.key }}
           script: |
             docker image prune -af
