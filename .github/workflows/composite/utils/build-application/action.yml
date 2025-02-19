@@ -35,6 +35,7 @@ runs:
       run: chmod +x ${{ inputs.working_dir }}gradlew
 
     - name: echo
+      shell: bash
       run: |
         ls -al ~/.gradle
 
