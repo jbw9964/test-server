@@ -16,17 +16,14 @@ on:
     secrets:
       server-address:
         required: true
-        type: string
         description: "An IP address or domain name of remote server"
 
       ssh-user:
         required: true
-        type: string
         description: "SSH user to login remote server"
 
       ssh-pw:
         required: true
-        type: string
         description: "SSH password to login remote server"
 
 env:

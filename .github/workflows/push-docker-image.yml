@@ -22,22 +22,18 @@ on:
     secrets:
       profile-context:
         required: true
-        type: string
         description: "A context of profile to add"
 
       docker-repo:
         required: true
-        type: string
         description: "A name of docker repository to push"
 
       docker-id:
         required: true
-        type: string
         description: "DockerHub ID"
 
       docker-pw:
         required: true
-        type: string
         description: "DockerHub PW"
 
 
