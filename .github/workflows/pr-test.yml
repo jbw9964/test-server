@@ -19,7 +19,7 @@ jobs:
   test-build-docker:
     uses: ./.github/workflows/push-docker-image.yml
     with:
-      image-tag: '${{ github.sha }}'
+      docker-file-path: './test-server.dockerfile'
       profile-name: 'test-profile'
       property-postfix: 'properties'
     secrets:

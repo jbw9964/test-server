@@ -3,10 +3,10 @@ name: Push docker image to DockerHub
 on:
   workflow_call:
     inputs:
-      image-tag:
+      docker-file-path:
+        required: true
         type: string
-        default: ${{ github.sha }}
-        description: "A tag of an docker image to push"
+        description: "A path of an dockerFile to build"
 
       profile-name:
         required: true
@@ -39,7 +39,7 @@ on:
 
 env:
   base-name: ${{ secrets.docker-id }}/${{ secrets.docker-repo }}
-  tag: ${{ inputs.image-tag }}
+  file-path: ${{ inputs.docker-file-path }}
   user: ${{ secrets.docker-id }}
   pw: ${{ secrets.docker-pw }}
 
@@ -93,5 +93,6 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
+          file: ${{ env.file-path }}
           push: 'true'
           tags: ${{ steps.meta.outputs.tags }},${{ env.base-name }}:${{ env.tag }}
