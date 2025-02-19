@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Stop container on server
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ env.host }}
           username: ${{ env.user }}
@@ -47,7 +47,7 @@ jobs:
             docker stop ${{ inputs.container-name }} || true
 
       - name: Remove container
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ env.host }}
           username: ${{ env.user }}
@@ -56,7 +56,7 @@ jobs:
             docker container prune -f
 
       - name: Remove dangling images
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ env.host }}
           username: ${{ env.user }}
