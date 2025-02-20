@@ -80,6 +80,10 @@ jobs:
       - name: Show tree structure
         uses: ./.github/workflows/composite/utils/show-tree
 
+      - name: echo
+        run: |
+          echo "${{ github.sha }}"
+
       - name: Create docker metadata
         uses: docker/metadata-action@v5
         id: meta
