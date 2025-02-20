@@ -8,10 +8,15 @@ on:
         type: string
         description: "Additional tag to put on docker image. SHA will be added automatically."
 
-      docker-file-path:
+      docker-file-name:
         required: true
         type: string
-        description: "A path of an dockerFile to build"
+        description: "A name of a dockerFile to build image"
+
+      docker-file-dir:
+        required: true
+        type: string
+        description: "A directory where dockerFile exists"
 
       profile-name:
         required: true
@@ -44,13 +49,15 @@ on:
 
 env:
   base-name: ${{ secrets.docker-id }}/${{ secrets.docker-repo }}
-  tag: ${{ inputs.tag }}
-  file-path: ${{ inputs.docker-file-path }}
-  user: ${{ secrets.docker-id }}
-  pw: ${{ secrets.docker-pw }}
+  dock-tag: ${{ inputs.tag }}
+  dock-file-name: ${{ inputs.docker-file-name }}
+  dock-file-dir: ${{ inputs.docker-file-dir }}
 
-  context: ${{ secrets.profile-context }}
-  property: 'application-${{ inputs.profile-name }}.${{ inputs.property-postfix }}'
+  dock-id: ${{ secrets.docker-id }}
+  dock-pw: ${{ secrets.docker-pw }}
+
+  prof-context: ${{ secrets.profile-context }}
+  prof-property: 'application-${{ inputs.profile-name }}.${{ inputs.property-postfix }}'
 
 jobs:
   push-docker-img:
@@ -63,9 +70,9 @@ jobs:
       - name: Add application profile
         uses: ./.github/workflows/composite/utils/save-given-to-file
         with:
-          context: ${{ env.context }}
+          context: ${{ env.prof-context }}
           file_dir: 'src/main/resources'
-          file_name: ${{ env.property }}
+          file_name: ${{ env.prof-property }}
 
       - name: Build application
         uses: ./.github/workflows/composite/utils/build-application
@@ -76,8 +83,8 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ env.user }}
-          password: ${{ env.pw }}
+          username: ${{ env.dock-id }}
+          password: ${{ env.dock-pw }}
           logout: 'true'
 
       - name: Show tree structure
@@ -89,7 +96,7 @@ jobs:
         with:
           images: ${{ env.base-name }}
           tags: |
-            ${{ env.tag }}
+            ${{ env.dock-tag }}
             type=sha
 
       - name: Build and push image
@@ -97,8 +104,8 @@ jobs:
         env:
           DOCKER_BUILD_RECORD_UPLOAD: false
         with:
-          context: ${{ env.file-path }}
-          file: ${{ env.file-path }}
+          context: ${{ env.dock-file-dir }}
+          file: ${{ env.dock-file-name }}
           push: 'true'
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha

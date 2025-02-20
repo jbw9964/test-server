@@ -19,7 +19,8 @@ jobs:
     uses: ./.github/workflows/push-docker-image.yml
     with:
       tag: 'hello-world'
-      docker-file-path: 'test-server.dockerfile'
+      docker-file-name: 'test-server.dockerfile'
+      docker-file-dir: './'
       profile-name: 'test-server'
       property-postfix: 'properties'
     secrets:
