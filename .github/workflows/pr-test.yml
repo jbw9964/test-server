@@ -9,28 +9,44 @@ on:
     branches:
       - reusable-workflow-test
 
+env:
+  server-add: ${{ secrets.TEST_SERVER_ADDRESS }}
+  dev: ${{ secrets.TEST_SERVER_DEV }}
+  dev-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
+
+  dock-id: ${{ secrets.DOCKER_ID }}
+  dock-pw: ${{ secrets.DOCKER_PW }}
+  dock-repo: ${{ secrets.DOCKER_REPO }}
+  dock-tag: 'hello-world'
+  dock-file-name: 'test-server.dockerfile'
+  dock-file-dir: './'
+
+  prof-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+  prof-name: 'test-server'
+  prof-postfix: 'properties'
+
 jobs:
   prune-dockers:
     uses: ./.github/workflows/prune-dockers-on-server.yml
     with:
       container-name: 'test-server'
     secrets:
-      server-address: ${{ secrets.TEST_SERVER_ADDRESS }}
-      ssh-user: ${{ secrets.TEST_SERVER_DEV }}
-      ssh-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
+      server-address: ${{ env.server-add }}
+      ssh-user: ${{ env.dev }}
+      ssh-pw: ${{ env.dev-pw }}
 
   test-build-docker:
     uses: ./.github/workflows/push-docker-image.yml
     with:
-      commit-sha: ${{ github.sha }}
-      docker-file-path: './test-server.dockerfile'
-      profile-name: 'test-profile'
-      property-postfix: 'properties'
+      tag: ${{ env.dock-tag }}
+      docker-file-path: ${{ env.dock-file-name }}
+      profile-name: ${{ env.prof-name }}
+      property-postfix: ${{ env.prof-postfix }}
     secrets:
-      docker-id: ${{ secrets.DOCKER_ID }}
-      docker-pw: ${{ secrets.DOCKER_PW }}
-      docker-repo: ${{ secrets.DOCKER_REPO }}
-      profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+      docker-id: ${{ env.dock-id }}
+      docker-pw: ${{ env.dock-pw }}
+      docker-repo: ${{ env.dock-repo }}
+      profile-context: ${{ env.prof-context }}
 
   run-docker-on-server:
     uses: ./.github/workflows/run-docker-on-server.yml

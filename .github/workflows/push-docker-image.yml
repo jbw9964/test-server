@@ -3,10 +3,10 @@ name: Push docker image to DockerHub
 on:
   workflow_call:
     inputs:
-      commit-sha:
-        required: true
+      tag:
+        required: false
         type: string
-        description: "A SHA of latest commit. It will be added to image tag"
+        description: "Additional tag to put on docker image. SHA will be added automatically."
 
       docker-file-path:
         required: true
@@ -44,7 +44,7 @@ on:
 
 env:
   base-name: ${{ secrets.docker-id }}/${{ secrets.docker-repo }}
-  sha: ${{ inputs.commit-sha }}
+  tag: ${{ inputs.tag }}
   file-path: ${{ inputs.docker-file-path }}
   user: ${{ secrets.docker-id }}
   pw: ${{ secrets.docker-pw }}
@@ -70,9 +70,6 @@ jobs:
       - name: Build application
         uses: ./.github/workflows/composite/utils/build-application
 
-      - name: Show tree structure
-        uses: ./.github/workflows/composite/utils/show-tree
-
       - name: Setup docker buildx
         uses: docker/setup-buildx-action@v3
 
@@ -86,25 +83,21 @@ jobs:
       - name: Show tree structure
         uses: ./.github/workflows/composite/utils/show-tree
 
-      - name: echo
-        run: |
-          echo "${{ github.sha }}"
-          echo "${{ env.sha }}"
-
       - name: Create docker metadata
         uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ env.base-name }}
           tags: |
-            ${{ env.sha }}
+            ${{ env.tag }}
+            type=sha
 
       - name: Build and push image
         uses: docker/build-push-action@v6
         env:
           DOCKER_BUILD_RECORD_UPLOAD: false
         with:
-          context: './'
+          context: ${{ env.file-path }}
           file: ${{ env.file-path }}
           push: 'true'
           tags: ${{ steps.meta.outputs.tags }}
