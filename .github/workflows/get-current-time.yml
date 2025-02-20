@@ -10,7 +10,8 @@ on:
         default: 'Asia/Seoul'
 
     outputs:
-      time: ${{ jobs.get-time.outputs.now }}
+      time:
+        value: ${{ jobs.get-time.outputs.now }}
 
 env:
   zone: ${{ inputs.timezone }}
