@@ -64,3 +64,9 @@ jobs:
           password: ${{ env.pw }}
           script: |
             docker image prune -af
+
+    echo:
+      runs-on: ubuntu-latest
+
+      steps:
+        - run: echo ${{ github.sha }}

@@ -7,6 +7,12 @@ on:
       - develop
 
 jobs:
+  echo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo ${{ github.sha }}
+
   prune-dockers:
     uses: ./.github/workflows/prune-dockers-on-server.yml
     with:
@@ -34,9 +40,3 @@ jobs:
     needs:
       - prune-dockers
       - test-build-docker
-
-  echo:
-    runs-on: ubuntu-latest
-
-    steps:
-      - run: echo ${{ github.sha }}
