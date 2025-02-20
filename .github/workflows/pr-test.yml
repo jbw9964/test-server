@@ -6,8 +6,8 @@ on:
       - main
       - develop
   push:
-      branches:
-        - reusable-workflow-test
+    branches:
+      - reusable-workflow-test
 
 jobs:
   prune-dockers:
