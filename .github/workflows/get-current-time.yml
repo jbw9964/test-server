@@ -1,0 +1,30 @@
+name: Get current time
+run-name: Get current time
+
+on:
+  workflow_call:
+    inputs:
+      timezone:
+        required: false
+        type: string
+        default: 'Asia/Seoul'
+
+    outputs:
+      time: ${{ jobs.get-time.outputs.now }}
+
+env:
+  zone: ${{ inputs.timezone }}
+
+jobs:
+  get-time:
+    runs-on: ubuntu-latest
+    outputs:
+      now: ${{ steps.get-time.outputs.time }}
+
+    steps:
+      - name: Set timezone and get current time
+        id: get-time
+        run: |
+          export TZ="${{ env.zone }}"
+          date_tag=$(date +'%Y%m%d-%H%M%S')
+          echo "time=$date_tag" >> $GITHUB_OUTPUT
