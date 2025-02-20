@@ -85,7 +85,6 @@ jobs:
         id: meta
         with:
           images: ${{ env.base-name }}
-          context: 'git'
           tags: |
             type=ref,event=branch
             type=sha
