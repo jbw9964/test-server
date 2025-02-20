@@ -3,6 +3,11 @@ name: Push docker image to DockerHub
 on:
   workflow_call:
     inputs:
+      commit-sha:
+        required: true
+        type: string
+        description: "A SHA of latest commit. It will be added to image tag"
+
       docker-file-path:
         required: true
         type: string
@@ -39,6 +44,7 @@ on:
 
 env:
   base-name: ${{ secrets.docker-id }}/${{ secrets.docker-repo }}
+  sha: ${{ inputs.commit-sha }}
   file-path: ${{ inputs.docker-file-path }}
   user: ${{ secrets.docker-id }}
   pw: ${{ secrets.docker-pw }}
@@ -83,6 +89,7 @@ jobs:
       - name: echo
         run: |
           echo "${{ github.sha }}"
+          echo "${{ env.sha }}"
 
       - name: Create docker metadata
         uses: docker/metadata-action@v5
@@ -90,9 +97,8 @@ jobs:
         with:
           images: ${{ env.base-name }}
           tags: |
-            type=ref,event=branch
-            type=sha
             type=schedule,pattern={{date 'YYYYMMDD-hhmmss', tz='Asia/Seoul'}}
+            ${{ env.sha }}
 
       - name: Build and push image
         uses: docker/build-push-action@v6
