@@ -3,10 +3,11 @@ name: Push docker image to DockerHub
 on:
   workflow_call:
     inputs:
-      tag:
+      tags:
         required: false
         type: string
-        description: "Additional tag to put on docker image. SHA will be added automatically."
+        description: "List of tags to add"
+        default: ${{ github.sha }}
 
       docker-file-name:
         required: true
@@ -49,7 +50,7 @@ on:
 
 env:
   base-name: ${{ secrets.docker-id }}/${{ secrets.docker-repo }}
-  dock-tag: ${{ inputs.tag }}
+  dock-tags: ${{ inputs.tags }}
   dock-file-name: ${{ inputs.docker-file-name }}
   dock-file-dir: ${{ inputs.docker-file-dir }}
 
@@ -96,8 +97,7 @@ jobs:
         with:
           images: ${{ env.base-name }}
           tags: |
-            ${{ env.dock-tag }}
-            type=sha
+            ${{ env.dock-tags }}
 
       - name: Build and push image
         uses: docker/build-push-action@v6

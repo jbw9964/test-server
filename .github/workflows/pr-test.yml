@@ -6,7 +6,20 @@ on:
       - reusable-workflow-test
 
 jobs:
-  prune-dockers:
+  time:
+    runs-on: ubuntu-latest
+    outputs:
+      now: ${{ steps.get-time.outputs.time }}
+
+    steps:
+      - name: Set timezone and get current time
+        id: get-time
+        run: |
+          export TZ="Asia/Seoul"
+          date_tag=$(date +'%Y%m%d-%H%M%S')
+          echo "time=$date_tag" >> $GITHUB_OUTPUT
+
+  prune:
     uses: ./.github/workflows/prune-dockers-on-server.yml
     with:
       container-name: 'test-server'
@@ -15,12 +28,13 @@ jobs:
       ssh-user: ${{ secrets.TEST_SERVER_DEV }}
       ssh-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
 
-  test-build-docker:
+  push:
+    needs: time
     uses: ./.github/workflows/push-docker-image.yml
     with:
-      tag: |
-        hello-world
-        how-are-you
+      tags: |
+        ${{ needs.time.outputs.now }}
+        ${{ github.sha }}
       docker-file-name: 'test-server.dockerfile'
       docker-file-dir: './'
       profile-name: 'test-server'
@@ -34,5 +48,5 @@ jobs:
   run-docker-on-server:
     uses: ./.github/workflows/run-docker-on-server.yml
     needs:
-      - prune-dockers
-      - test-build-docker
+      - prune
+      - push
