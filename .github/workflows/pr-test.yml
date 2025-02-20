@@ -6,18 +6,6 @@ on:
       - reusable-workflow-test
 
 jobs:
-  time:
-    runs-on: ubuntu-latest
-    outputs:
-      now: ${{ steps.get-time.outputs.time }}
-
-    steps:
-      - name: Set timezone and get current time
-        id: get-time
-        run: |
-          export TZ="Asia/Seoul"
-          date_tag=$(date +'%Y%m%d-%H%M%S')
-          echo "time=$date_tag" >> $GITHUB_OUTPUT
 
   prune:
     uses: ./.github/workflows/prune-dockers-on-server.yml
@@ -29,11 +17,9 @@ jobs:
       ssh-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
 
   push:
-    needs: time
     uses: ./.github/workflows/push-docker-image.yml
     with:
       tags: |
-        ${{ needs.time.outputs.now }}
         ${{ github.sha }}
       docker-file-name: 'test-server.dockerfile'
       docker-file-dir: './'
@@ -44,6 +30,16 @@ jobs:
       docker-pw: ${{ secrets.DOCKER_PW }}
       docker-repo: ${{ secrets.DOCKER_REPO }}
       profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+
+  time:
+    uses: ./.github/workflows/get-current-time.yml
+
+  echo:
+    runs-on: ubuntu-latest
+    needs: time
+
+    steps:
+      - run: echo "${{ needs.time.outputs.time }}"
 
   run-docker-on-server:
     uses: ./.github/workflows/run-docker-on-server.yml
