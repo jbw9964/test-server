@@ -1,10 +1,6 @@
 name: test reusable workflows
 
 on:
-  pull_request:
-    branches:
-      - main
-      - develop
   push:
     branches:
       - reusable-workflow-test
