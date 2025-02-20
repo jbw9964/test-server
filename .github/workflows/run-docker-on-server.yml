@@ -96,6 +96,7 @@ jobs:
             --name ${{ env.container }} \
             -e SPRING_PROFILES_ACTIVE=${{ env.profile }} \
             -e TZ=${{ env.zone }}
+            ${{ env.dock-img }}
 
       - name: Logout docker
         uses: appleboy/ssh-action@v1.2.1
