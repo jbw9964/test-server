@@ -21,6 +21,7 @@ on:
 
       host-port:
         required: true
+        type: number
         description: "Host port to bind with container. (-p host-port:internal-port)"
 
       timezone:

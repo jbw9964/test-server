@@ -39,7 +39,7 @@ jobs:
     with:
       container-name: 'test-server'
       docker-image-tag: ${{ github.sha }}
-      host-port: '8080'
+      host-port: 8080
       profile-to-active: 'test-server'
     secrets:
       server-address: ${{ secrets.TEST_SERVER_ADDRESS }}
