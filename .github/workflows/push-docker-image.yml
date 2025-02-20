@@ -97,8 +97,8 @@ jobs:
         with:
           images: ${{ env.base-name }}
           tags: |
-            type=schedule,pattern={{date 'YYYYMMDD-hhmmss', tz='Asia/Seoul'}}
-            ${{ env.sha }}
+            type=ref,event=branch
+            type=sha
 
       - name: Build and push image
         uses: docker/build-push-action@v6
