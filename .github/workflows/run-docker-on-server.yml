@@ -95,7 +95,7 @@ jobs:
             docker run -d -p ${{ env.dock-port }}:8080 \
             --name ${{ env.container }} \
             -e SPRING_PROFILES_ACTIVE=${{ env.profile }} \
-            -e TZ=${{ env.zone }}
+            -e TZ=${{ env.zone }} \
             ${{ env.dock-img }}
 
       - name: Logout docker
