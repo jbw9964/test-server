@@ -97,7 +97,7 @@ jobs:
         with:
           images: ${{ env.base-name }}
           tags: |
-            type=ref,event=branch
+            ${{ env.sha }}
 
       - name: Build and push image
         uses: docker/build-push-action@v6

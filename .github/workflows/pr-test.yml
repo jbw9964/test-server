@@ -34,3 +34,9 @@ jobs:
     needs:
       - prune-dockers
       - test-build-docker
+
+  echo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo ${{ github.sha }}
