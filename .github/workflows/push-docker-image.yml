@@ -31,6 +31,12 @@ on:
         default: "properties"
         description: "A postfix to add to profile property like yml"
 
+      platforms:
+        required: false
+        type: string
+        default: "linux/amd64"
+        description: "A platform that image runnable"
+
     secrets:
       profile-context:
         required: true
@@ -54,6 +60,7 @@ env:
   dock-tags: ${{ inputs.tags }}
   dock-file-name: ${{ inputs.docker-file-name }}
   dock-file-dir: ${{ inputs.docker-file-dir }}
+  dock-plt: ${{ inputs.platforms }}
 
   dock-id: ${{ secrets.docker-id }}
   dock-pw: ${{ secrets.docker-pw }}
@@ -102,8 +109,6 @@ jobs:
 
       - name: Build and push image
         uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_RECORD_UPLOAD: false
         with:
           context: ${{ env.dock-file-dir }}
           file: ${{ env.dock-file-name }}
@@ -111,3 +116,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          platforms: |
+            ${{ env.dock-plt }}
