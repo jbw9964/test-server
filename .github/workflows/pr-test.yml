@@ -18,7 +18,9 @@ jobs:
   test-build-docker:
     uses: ./.github/workflows/push-docker-image.yml
     with:
-      tag: 'hello-world'
+      tag: |
+        hello-world
+        how-are-you
       docker-file-name: 'test-server.dockerfile'
       docker-file-dir: './'
       profile-name: 'test-server'
