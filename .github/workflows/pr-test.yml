@@ -16,6 +16,7 @@ env:
   dock-tag: 'hello-world'
   dock-file-name: 'test-server.dockerfile'
   dock-file-dir: './'
+  dock-container: 'test-server'
 
   prof-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
   prof-name: 'test-server'
@@ -25,7 +26,7 @@ jobs:
   prune-dockers:
     uses: ./.github/workflows/prune-dockers-on-server.yml
     with:
-      container-name: 'test-server'
+      container-name: ${{ env.dock-container }}
     secrets:
       server-address: ${{ env.server-add }}
       ssh-user: ${{ env.dev }}
