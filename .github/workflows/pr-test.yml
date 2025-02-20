@@ -26,23 +26,25 @@ jobs:
       profile-name: 'test-server'
       property-postfix: 'properties'
     secrets:
+      docker-repo: ${{ secrets.DOCKER_REPO }}
       docker-id: ${{ secrets.DOCKER_ID }}
       docker-pw: ${{ secrets.DOCKER_PW }}
-      docker-repo: ${{ secrets.DOCKER_REPO }}
       profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
 
-  time:
-    uses: ./.github/workflows/get-current-time.yml
-
-  echo:
-    runs-on: ubuntu-latest
-    needs: time
-
-    steps:
-      - run: echo "${{ needs.time.outputs.time }}"
-
-  run-docker-on-server:
-    uses: ./.github/workflows/run-docker-on-server.yml
+  run:
     needs:
       - prune
       - push
+    uses: ./.github/workflows/run-docker-on-server.yml
+    with:
+      container-name: 'test-server'
+      docker-image-tag: ${{ github.sha }}
+      host-port: '8080'
+      profile-to-active: 'test-server'
+    secrets:
+      server-address: ${{ secrets.TEST_SERVER_ADDRESS }}
+      ssh-user: ${{ secrets.TEST_SERVER_DEV }}
+      ssh-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
+      docker-repo: ${{ secrets.DOCKER_REPO }}
+      docker-id: ${{ secrets.DOCKER_ID }}
+      docker-pw: ${{ secrets.DOCKER_PW }}

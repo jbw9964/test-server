@@ -25,21 +25,21 @@ on:
 
 
 env:
-  host: ${{ secrets.server-address }}
+  server: ${{ secrets.server-address }}
   user: ${{ secrets.ssh-user }}
   pw: ${{ secrets.ssh-pw }}
   container: ${{ inputs.container-name }}
 
 
 jobs:
-  prune-docker-container-and-images-on-server:
+  prune-dockers:
     runs-on: ubuntu-latest
 
     steps:
       - name: Stop container on server
         uses: appleboy/ssh-action@v1.2.1
         with:
-          host: ${{ env.host }}
+          host: ${{ env.server }}
           username: ${{ env.user }}
           password: ${{ env.pw }}
           script: |
@@ -48,7 +48,7 @@ jobs:
       - name: Remove container
         uses: appleboy/ssh-action@v1.2.1
         with:
-          host: ${{ env.host }}
+          host: ${{ env.server }}
           username: ${{ env.user }}
           password: ${{ env.pw }}
           script: |
@@ -57,7 +57,7 @@ jobs:
       - name: Remove dangling images
         uses: appleboy/ssh-action@v1.2.1
         with:
-          host: ${{ env.host }}
+          host: ${{ env.server }}
           username: ${{ env.user }}
           password: ${{ env.pw }}
           script: |

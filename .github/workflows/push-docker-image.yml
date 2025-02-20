@@ -64,7 +64,7 @@ env:
 
 jobs:
 
-  build-and-push-image-to-hub:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
