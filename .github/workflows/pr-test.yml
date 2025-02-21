@@ -36,7 +36,6 @@ jobs:
 
   test:
     uses: ./.github/workflows/run-test.yml
-    continue-on-error: true
     with:
       working_dir: './'
 

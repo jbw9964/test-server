@@ -22,13 +22,9 @@ jobs:
   run-test:
     runs-on: ubuntu-latest
     outputs:
-      success: ${{ steps.test.outputs.success }}
+      success: ${{ steps.record.outputs.success }}
 
     steps:
-      - name: Set success as false
-        run: |
-          echo "success=false" >> $GITHUB_OUTPUT
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -38,9 +34,18 @@ jobs:
           working_dir: ${{ env.dir }}
 
       - name: Run test
+        continue-on-error: true
         id: test
         shell: bash
         run: |
           ${{ env.dir }}/gradlew test \
           --build-cache --parallel
-          echo "success=true" >> $GITHUB_OUTPUT
+
+      - name: Record test result
+        id: record
+        run: |
+          if [ "${{ steps.test.outcome }}" == "success" ]; then
+            echo "success=true" >> $GITHUB_OUTPUT
+          else
+            echo "success=false" >> $GITHUB_OUTPUT
+          fi
