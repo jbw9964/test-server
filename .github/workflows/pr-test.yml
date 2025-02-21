@@ -16,24 +16,6 @@ jobs:
       ssh-user: ${{ secrets.TEST_SERVER_DEV }}
       ssh-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
 
-  push:
-    uses: ./.github/workflows/push-docker-image.yml
-    with:
-      tags: |
-        ${{ github.sha }}
-      platforms: |
-        linux/amd64
-        linux/arm64
-      docker-file-name: 'test-server.dockerfile'
-      docker-file-dir: './'
-      profile-name: 'test-server'
-      property-postfix: 'properties'
-    secrets:
-      docker-repo: ${{ secrets.DOCKER_REPO }}
-      docker-id: ${{ secrets.DOCKER_ID }}
-      docker-pw: ${{ secrets.DOCKER_PW }}
-      profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
-
   test:
     uses: ./.github/workflows/run-test.yml
     with:
@@ -51,11 +33,29 @@ jobs:
           fi
           echo "Test has been passed. Continue deployment"
 
+  push:
+    needs: abort-in-failure
+    uses: ./.github/workflows/push-docker-image.yml
+    with:
+      tags: |
+        ${{ github.sha }}
+      platforms: |
+        linux/amd64
+        linux/arm64
+      docker-file-name: 'test-server.dockerfile'
+      docker-file-dir: './'
+      profile-name: 'test-server'
+      property-postfix: 'properties'
+    secrets:
+      docker-repo: ${{ secrets.DOCKER_REPO }}
+      docker-id: ${{ secrets.DOCKER_ID }}
+      docker-pw: ${{ secrets.DOCKER_PW }}
+      profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+
   pull-and-run:
     needs:
       - prune
       - push
-      - abort-in-failure
     uses: ./.github/workflows/pull-and-run-docker-on-server.yml
     with:
       container-name: 'test-server'
