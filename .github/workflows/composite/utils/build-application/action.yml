@@ -34,7 +34,6 @@ runs:
       shell: bash
       run: chmod +x ${{ inputs.working_dir }}gradlew
 
-
     - name: Cache gradle
       id: cache-gradle
       uses: actions/cache@v4
@@ -45,25 +44,23 @@ runs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle-
 
-    - name: Cache jar
-      id: cache-jar
-      uses: actions/cache@v4
-      with:
-        path: |
-          ${{ inputs.working_dir }}/build/libs/**
-        key: ${{ runner.os }}-jar-${{ hashFiles(format('{0}/build/libs/**', inputs.working_dir), format('{0}/src/**/resources/**', inputs.working_dir)) }}
-        restore-keys: ${{ runner.os }}-jar-
-
-
     - name: Setup JDK
       uses: actions/setup-java@v4
       with:
         java-version: ${{ inputs.java_version }}
         distribution: ${{ inputs.distribution }}
 
-    - name: Build when no cache found
-      if: steps.cache-gradle.outputs.cache-hit != 'true' || steps.cache-jar.outputs.cache-hit != 'true'
+    - name: Build with gradle
       shell: bash
       run: |
-        echo "Cache miss. Running gradlew build..."
-        ${{ inputs.working_dir }}gradlew build -x test
+        ${{ inputs.working_dir }}gradlew build --build-cache -x test
+
+    - name: echo
+      shell: bash
+      run: |
+        echo "${{ hashFiles('**/src/**') }}"
+
+    - name: echo
+      shell: bash
+      run: |
+        echo "Hello world!"
