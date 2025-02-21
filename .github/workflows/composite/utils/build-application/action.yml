@@ -47,14 +47,11 @@ runs:
 
     - name: Cache jar
       id: cache-jar
-      env:
-        jar: '${{ inputs.working_dir }}/build/libs/**'
-        properties: '${{ inputs.working_dir }}/src/**/resources/**'
       uses: actions/cache@v4
       with:
         path: |
           ${{ inputs.working_dir }}/build/libs/**
-        key: ${{ runner.os }}-jar-${{ hashFiles(env.jar, env.properties) }}
+        key: ${{ runner.os }}-jar-${{ hashFiles(format('{0}/build/libs/**', inputs.working_dir), format('{0}/src/**/resources/**', inputs.working_dir)) }}
         restore-keys: ${{ runner.os }}-jar-
 
 
@@ -68,5 +65,5 @@ runs:
       if: steps.cache-gradle.outputs.cache-hit != 'true' || steps.cache-jar.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        echo "No gradle found via cache. Running gradlew build..."
+        echo "Cache miss. Running gradlew build..."
         ${{ inputs.working_dir }}gradlew build -x test
