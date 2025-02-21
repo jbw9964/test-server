@@ -35,14 +35,17 @@ runs:
       run: chmod +x ${{ inputs.working_dir }}gradlew
 
     - name: Cache gradle
+      env:
+        jar: '${{ inputs.working_dir }}/build/libs/**'
+        properties: '${{ inputs.working_dir }}/src/**/resources/**'
       uses: actions/cache@v4
       id: cache-gradle
       with:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-          ./build/libs/**
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', './build/libs/**') }}
+          ${{ inputs.working_dir }}/build/libs/**
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', env.jar, env.properties) }}
         restore-keys: ${{ runner.os }}-gradle-
 
     - name: Setup JDK
