@@ -107,6 +107,9 @@ jobs:
             ${{ env.dock-tags }}
 
 
+      - name: Show tree
+        uses: ./.github/workflows/composite/utils/show-tree
+
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
