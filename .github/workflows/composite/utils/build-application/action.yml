@@ -34,19 +34,29 @@ runs:
       shell: bash
       run: chmod +x ${{ inputs.working_dir }}gradlew
 
+
     - name: Cache gradle
-      env:
-        jar: '${{ inputs.working_dir }}/build/libs/**'
-        properties: '${{ inputs.working_dir }}/src/**/resources/**'
-      uses: actions/cache@v4
       id: cache-gradle
+      uses: actions/cache@v4
       with:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-          ${{ inputs.working_dir }}/build/libs/**
-        key: ${{ runner.os }}-application-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}-${{ hashFiles(env.jar, env.properties) }}
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle-
+
+    - name: Cache jar
+      id: cache-jar
+      env:
+        jar: '${{ inputs.working_dir }}/build/libs/**'
+        properties: '${{ inputs.working_dir }}/src/**/resources/**'
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{ inputs.working_dir }}/build/libs/**
+        key: ${{ runner.os }}-jar-${{ hashFiles(env.jar, env.properties) }}
+        restore-keys: ${{ runner.os }}-jar-
+
 
     - name: Setup JDK
       uses: actions/setup-java@v4
@@ -54,8 +64,8 @@ runs:
         java-version: ${{ inputs.java_version }}
         distribution: ${{ inputs.distribution }}
 
-    - name: Build if no gradle cache found
-      if: steps.cache-gradle.outputs.cache-hit != 'true'
+    - name: Build when no cache found
+      if: steps.cache-gradle.outputs.cache-hit != 'true' || steps.cache-jar.outputs.cache-hit != 'true'
       shell: bash
       run: |
         echo "No gradle found via cache. Running gradlew build..."
