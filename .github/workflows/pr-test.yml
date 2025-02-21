@@ -34,7 +34,6 @@ jobs:
           echo "Test has been passed. Continue deployment"
 
   push:
-    needs: abort-in-failure
     uses: ./.github/workflows/push-docker-image.yml
     with:
       tags: |
@@ -56,6 +55,7 @@ jobs:
     needs:
       - prune
       - push
+      - abort-in-failure
     uses: ./.github/workflows/pull-and-run-docker-on-server.yml
     with:
       container-name: 'test-server'
