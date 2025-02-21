@@ -36,8 +36,8 @@ runs:
 
     - name: Cache gradle
       env:
-        jar: '${{ inputs.working_dir }}./build/libs/**'
-        properties: '${{ inputs.working_dir }}./src/**/resources/**'
+        jar: '${{ inputs.working_dir }}/build/libs/**'
+        properties: '${{ inputs.working_dir }}/src/**/resources/**'
       uses: actions/cache@v4
       id: cache-gradle
       with:
@@ -45,7 +45,7 @@ runs:
           ~/.gradle/caches
           ~/.gradle/wrapper
           ${{ inputs.working_dir }}/build/libs/**
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', env.jar, env.properties) }}
+        key: ${{ runner.os }}-application-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}-${{ hashFiles(env.jar, env.properties) }}
         restore-keys: ${{ runner.os }}-gradle-
 
     - name: Setup JDK
