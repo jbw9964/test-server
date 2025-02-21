@@ -36,8 +36,8 @@ runs:
 
     - name: Cache gradle
       env:
-        jar: '${{ inputs.working_dir }}/build/libs/**'
-        properties: '${{ inputs.working_dir }}/src/**/resources/**'
+        jar: '${{ inputs.working_dir }}./build/libs/**'
+        properties: '${{ inputs.working_dir }}./src/**/resources/**'
       uses: actions/cache@v4
       id: cache-gradle
       with:
