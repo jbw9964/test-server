@@ -34,7 +34,6 @@ env:
 jobs:
   prune-dockers:
     runs-on: ubuntu-latest
-
     steps:
       - name: Stop container on server
         uses: appleboy/ssh-action@v1.2.1

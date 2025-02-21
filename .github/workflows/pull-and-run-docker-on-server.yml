@@ -1,5 +1,5 @@
-
-name: prev
+name: Pull and run docker on server
+run-name: Pull & run docker
 
 on:
   workflow_call:
@@ -73,7 +73,6 @@ env:
 jobs:
   run-container:
     runs-on: ubuntu-latest
-
     steps:
       - name: Pull image on remote server
         uses: appleboy/ssh-action@v1.2.1
@@ -84,6 +83,7 @@ jobs:
           script: |
             echo ${{ env.dock-pw }} | docker login -u ${{ env.dock-id }} --password-stdin
             docker pull ${{ env.dock-img }}
+            docker logout
 
       - name: Run container
         uses: appleboy/ssh-action@v1.2.1
@@ -97,12 +97,3 @@ jobs:
             -e SPRING_PROFILES_ACTIVE=${{ env.profile }} \
             -e TZ=${{ env.zone }} \
             ${{ env.dock-img }}
-
-      - name: Logout docker
-        uses: appleboy/ssh-action@v1.2.1
-        with:
-          host: ${{ env.server }}
-          username: ${{ env.user }}
-          password: ${{ env.pw }}
-          script: |
-            docker logout

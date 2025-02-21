@@ -1,0 +1,46 @@
+name: Run test
+run-name: Run test
+
+on:
+  workflow_call:
+    inputs:
+      working_dir:
+        required: true
+        type: string
+        default: './'
+        description: 'A directory where gradlew exists'
+
+    outputs:
+      success:
+        value: ${{ jobs.run-test.outputs.success }}
+        description: 'Whether test success'
+
+env:
+  dir: ${{ inputs.working_dir }}
+
+jobs:
+  run-test:
+    runs-on: ubuntu-latest
+    outputs:
+      success: ${{ steps.test.outputs.success }}
+
+    steps:
+      - name: Set success as false
+        run: |
+          echo "success=false" >> $GITHUB_OUTPUT
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build application
+        uses: ./.github/workflows/composite/utils/build-application
+        with:
+          working_dir: ${{ env.dir }}
+
+      - name: Run test
+        id: test
+        shell: bash
+        run: |
+          ${{ env.dir }}/gradlew test \
+          --build-cache --parallel
+          echo "success=true" >> $GITHUB_OUTPUT

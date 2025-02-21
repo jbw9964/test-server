@@ -53,14 +53,5 @@ runs:
     - name: Build with gradle
       shell: bash
       run: |
-        ${{ inputs.working_dir }}gradlew build --build-cache -x test
-
-    - name: echo
-      shell: bash
-      run: |
-        echo "${{ hashFiles('**/src/**') }}"
-
-    - name: echo
-      shell: bash
-      run: |
-        echo "Hello world!"
+        ${{ inputs.working_dir }}/gradlew build \
+        --build-cache --parallel -x test

@@ -5,8 +5,8 @@ on:
     branches:
       - reusable-workflow-test
 
-jobs:
 
+jobs:
   prune:
     uses: ./.github/workflows/prune-dockers-on-server.yml
     with:
@@ -34,11 +34,30 @@ jobs:
       docker-pw: ${{ secrets.DOCKER_PW }}
       profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
 
-  run:
+  test:
+    uses: ./.github/workflows/run-test.yml
+    continue-on-error: true
+    with:
+      working_dir: './'
+
+  abort-in-failure:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Check test result
+        run: |
+          if [ "${{ needs.test.outputs.success }}" != "true" ]; then
+            echo "Test has been failed. Abort deployment."
+            exit 1
+          fi
+          echo "Test has been passed. Continue deployment"
+
+  pull-and-run:
     needs:
       - prune
       - push
-    uses: ./.github/workflows/run-docker-on-server.yml
+      - abort-in-failure
+    uses: ./.github/workflows/pull-and-run-docker-on-server.yml
     with:
       container-name: 'test-server'
       docker-image-tag: ${{ github.sha }}
