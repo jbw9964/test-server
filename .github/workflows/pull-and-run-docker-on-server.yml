@@ -1,0 +1,99 @@
+name: Pull and run docker on server
+run-name: Pull & run docker
+
+on:
+  workflow_call:
+    inputs:
+      container-name:
+        required: true
+        type: string
+        description: "A name of a container to run image"
+
+      profile-to-active:
+        required: true
+        type: string
+        description: "A profile to active on container. (-e SPRING_PROFILES_ACTIVE)"
+
+      docker-image-tag:
+        required: true
+        type: string
+        description: "A tag of an image to pull"
+
+      host-port:
+        required: true
+        type: number
+        description: "Host port to bind with container. (-p host-port:internal-port)"
+
+      timezone:
+        required: false
+        type: string
+        default: 'Asia/Seoul'
+        description: "A timezone of an container"
+
+    secrets:
+      server-address:
+        required: true
+        description: "An IP address or domain name of remote server"
+
+      ssh-user:
+        required: true
+        description: "SSH user to login remote server"
+
+      ssh-pw:
+        required: true
+        description: "SSH password to login remote server"
+
+      docker-repo:
+        required: true
+        description: "A name of docker repository to pull image"
+
+      docker-id:
+        required: true
+        description: "DockerHub ID"
+
+      docker-pw:
+        required: true
+        description: "DockerHub PW"
+
+env:
+  server: ${{ secrets.server-address }}
+  user: ${{ secrets.ssh-user }}
+  pw: ${{ secrets.ssh-pw }}
+
+  dock-img: ${{ secrets.docker-id }}/${{ secrets.docker-repo }}:${{ inputs.docker-image-tag }}
+  dock-id: ${{ secrets.docker-id }}
+  dock-pw: ${{ secrets.docker-pw }}
+  dock-port: ${{ inputs.host-port }}
+  zone: ${{ inputs.timezone }}
+
+  container: ${{ inputs.container-name }}
+  profile: ${{ inputs.profile-to-active }}
+
+
+jobs:
+  run-container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull image on remote server
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ env.server }}
+          username: ${{ env.user }}
+          password: ${{ env.pw }}
+          script: |
+            echo ${{ env.dock-pw }} | docker login -u ${{ env.dock-id }} --password-stdin
+            docker pull ${{ env.dock-img }}
+            docker logout
+
+      - name: Run container
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ env.server }}
+          username: ${{ env.user }}
+          password: ${{ env.pw }}
+          script: |
+            docker run -d -p ${{ env.dock-port }}:8080 \
+            --name ${{ env.container }} \
+            -e SPRING_PROFILES_ACTIVE=${{ env.profile }} \
+            -e TZ=${{ env.zone }} \
+            ${{ env.dock-img }}

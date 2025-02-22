@@ -1,0 +1,63 @@
+name: Prune dockers on server via ssh
+run-name: Prune dockers
+
+on:
+  workflow_call:
+    inputs:
+      container-name:
+        type: string
+        default: ${{ github.repository }}
+        description: "A name of docker container to stop in remote server. 
+        If no container running on server, it gracefully ignores container and prune everything."
+
+    secrets:
+      server-address:
+        required: true
+        description: "An IP address or domain name of remote server"
+
+      ssh-user:
+        required: true
+        description: "SSH user to login remote server"
+
+      ssh-pw:
+        required: true
+        description: "SSH password to login remote server"
+
+
+env:
+  server: ${{ secrets.server-address }}
+  user: ${{ secrets.ssh-user }}
+  pw: ${{ secrets.ssh-pw }}
+  container: ${{ inputs.container-name }}
+
+
+jobs:
+  prune-dockers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop container on server
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ env.server }}
+          username: ${{ env.user }}
+          password: ${{ env.pw }}
+          script: |
+            docker stop ${{ inputs.container-name }} || true
+
+      - name: Remove container
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ env.server }}
+          username: ${{ env.user }}
+          password: ${{ env.pw }}
+          script: |
+            docker container prune -f
+
+      - name: Remove dangling images
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ env.server }}
+          username: ${{ env.user }}
+          password: ${{ env.pw }}
+          script: |
+            docker image prune -af

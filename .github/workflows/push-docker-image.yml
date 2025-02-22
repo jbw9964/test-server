@@ -1,0 +1,119 @@
+name: Push docker image to DockerHub
+run-name: Push docker
+
+on:
+  workflow_call:
+    inputs:
+      tags:
+        required: false
+        type: string
+        description: "List of tags to add"
+        default: ${{ github.sha }}
+
+      docker-file-name:
+        required: true
+        type: string
+        description: "A name of a dockerFile to build image"
+
+      docker-file-dir:
+        required: true
+        type: string
+        description: "A directory where dockerFile exists"
+
+      profile-name:
+        required: true
+        type: string
+        description: "A name of an profile to add"
+
+      property-postfix:
+        required: true
+        type: string
+        default: "properties"
+        description: "A postfix to add to profile property like yml"
+
+      platforms:
+        required: false
+        type: string
+        default: "linux/amd64"
+        description: "A platform that image runnable"
+
+    secrets:
+      profile-context:
+        required: true
+        description: "A context of profile to add"
+
+      docker-repo:
+        required: true
+        description: "A name of docker repository to push"
+
+      docker-id:
+        required: true
+        description: "DockerHub ID"
+
+      docker-pw:
+        required: true
+        description: "DockerHub PW"
+
+
+env:
+  base-name: ${{ secrets.docker-id }}/${{ secrets.docker-repo }}
+  dock-tags: ${{ inputs.tags }}
+  dock-file-name: ${{ inputs.docker-file-name }}
+  dock-file-dir: ${{ inputs.docker-file-dir }}
+  dock-plt: ${{ inputs.platforms }}
+
+  dock-id: ${{ secrets.docker-id }}
+  dock-pw: ${{ secrets.docker-pw }}
+
+  prof-context: ${{ secrets.profile-context }}
+  prof-property: 'application-${{ inputs.profile-name }}.${{ inputs.property-postfix }}'
+
+
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add application profile
+        uses: ./.github/workflows/composite/utils/save-given-to-file
+        with:
+          context: ${{ env.prof-context }}
+          file_dir: 'src/main/resources'
+          file_name: ${{ env.prof-property }}
+
+      - name: Build application
+        uses: ./.github/workflows/composite/utils/build-application
+
+
+      - name: Setup docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.dock-id }}
+          password: ${{ env.dock-pw }}
+          logout: 'true'
+
+      - name: Create docker metadata
+        uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ${{ env.base-name }}
+          tags: |
+            ${{ env.dock-tags }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.dock-file-dir }}
+          file: ${{ env.dock-file-name }}
+          push: 'true'
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: |
+            ${{ env.dock-plt }}
