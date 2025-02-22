@@ -1,12 +1,13 @@
-name: test reusable workflows
+
+name: CD to test production
 
 on:
   push:
     branches:
-      - reusable-workflow-test
-
+      - develop
 
 jobs:
+
   prune:
     uses: ./.github/workflows/prune-dockers-on-server.yml
     with:
