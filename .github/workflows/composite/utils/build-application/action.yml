@@ -35,8 +35,8 @@ runs:
       run: chmod +x ${{ inputs.working_dir }}gradlew
 
     - name: Cache gradle
-      uses: actions/cache@v4
       id: cache-gradle
+      uses: actions/cache@v4
       with:
         path: |
           ~/.gradle/caches
@@ -50,9 +50,8 @@ runs:
         java-version: ${{ inputs.java_version }}
         distribution: ${{ inputs.distribution }}
 
-    - name: Build if no gradle cache found
-      if: steps.cache-gradle.outputs.cache-hit != 'true'
+    - name: Build with gradle
       shell: bash
       run: |
-        echo "No gradle found via cache. Running gradlew build..."
-        ${{ inputs.working_dir }}gradlew build -x test
+        ${{ inputs.working_dir }}/gradlew build \
+        --build-cache --parallel -x test

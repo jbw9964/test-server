@@ -1,0 +1,72 @@
+
+name: CD to test production
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+
+  prune:
+    uses: ./.github/workflows/prune-dockers-on-server.yml
+    with:
+      container-name: 'test-server'
+    secrets:
+      server-address: ${{ secrets.TEST_SERVER_ADDRESS }}
+      ssh-user: ${{ secrets.TEST_SERVER_DEV }}
+      ssh-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
+
+  test:
+    uses: ./.github/workflows/run-test.yml
+    with:
+      working_dir: './'
+
+  abort-in-failure:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Check test result
+        run: |
+          if [ "${{ needs.test.outputs.success }}" != "true" ]; then
+            echo "Test has been failed. Abort deployment."
+            exit 1
+          fi
+          echo "Test has been passed. Continue deployment"
+
+  push:
+    uses: ./.github/workflows/push-docker-image.yml
+    with:
+      tags: |
+        ${{ github.sha }}
+      platforms: |
+        linux/amd64
+        linux/arm64
+      docker-file-name: 'test-server.dockerfile'
+      docker-file-dir: './'
+      profile-name: 'test-server'
+      property-postfix: 'properties'
+    secrets:
+      docker-repo: ${{ secrets.DOCKER_REPO }}
+      docker-id: ${{ secrets.DOCKER_ID }}
+      docker-pw: ${{ secrets.DOCKER_PW }}
+      profile-context: ${{ secrets.TEST_PROFILE_CONTEXT }}
+
+  pull-and-run:
+    needs:
+      - prune
+      - push
+      - abort-in-failure
+    uses: ./.github/workflows/pull-and-run-docker-on-server.yml
+    with:
+      container-name: 'test-server'
+      docker-image-tag: ${{ github.sha }}
+      host-port: 8080
+      profile-to-active: 'test-server'
+    secrets:
+      server-address: ${{ secrets.TEST_SERVER_ADDRESS }}
+      ssh-user: ${{ secrets.TEST_SERVER_DEV }}
+      ssh-pw: ${{ secrets.TEST_SERVER_DEV_PW }}
+      docker-repo: ${{ secrets.DOCKER_REPO }}
+      docker-id: ${{ secrets.DOCKER_ID }}
+      docker-pw: ${{ secrets.DOCKER_PW }}

@@ -1,0 +1,24 @@
+
+name: Sleep
+
+on:
+  workflow_call:
+    inputs:
+      sec:
+        required: false
+        type: number
+        default: 20
+
+jobs:
+  test-sleep:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: echo first
+        run: echo first!
+
+      - name: sleep
+        run: sleep ${{ inputs.sec }}s
+
+      - name: i'm awake now
+        run: echo "I'm awake!!!"
