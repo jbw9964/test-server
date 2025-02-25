@@ -111,13 +111,6 @@ Composite Action 을 호출하는 것은 `"현재 수행하는 job 에서 어느
 
 이 두가지가 아주 비슷하다 보니 어떤걸 사용해야 될 지 고민되었고, 그냥 `"다른 runner 에서 돌아가야 하는지"` 를 기준으로 삼아 분리했다.
 
-```
-.github/
-└── workflows
-    ├── composite   // Composite Action 들 dir
-    └── reusable    // Reusable Workflow 들 dir
-```
-
 ---
 
 ### Composite Actions
@@ -303,6 +296,7 @@ runs:
 
 ### Reusable Workflows
 
+잉 귀찮아 [블로그 참조](https://velog.io/@jbw9964/Habit-Home-server-%EA%B5%AC%EC%B6%95%EA%B8%B0-5-CD-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EA%B5%AC%EC%B6%95#reusable-workflows)
 
 ---
 
@@ -362,6 +356,28 @@ spring.profiles.include=essential
 
 spring.profiles.active=local-docker
 ```
+
+참고로 지금 테스트 서버에 `앱은 docker`, `MySQL 은 local` 로 돌아가고 있음.
+그래서 `docker <---> local MySQL` 처럼 DB 통신해야 됨.
+
+문제는 **앱이 docker 로 돌아갈 때 local 과 통신** 하는 방식임.
+
+결론적으로 만약 서버가 Window, MacOS 같은 거면 `DB Host` 를 아래처럼 넣으면 됨.
+
+```properties
+db-host=host.docker.internal
+```
+
+근데 만약 Linux 면 아래처럼 해야됨
+
+```properties
+db-host=172.17.0.1
+```
+
+`172.17.0.1` 가 docker default gateway 기본 주소인가 뭔가 그렇다나봄.
+결론은 OS 에 따라 저거 달라져야 됨.
+
+뭔가 통일되게 하는 방법은 몰???루???
 
 ---
 

@@ -42,7 +42,7 @@ jobs:
           username: ${{ env.user }}
           password: ${{ env.pw }}
           script: |
-            docker stop ${{ inputs.container-name }} || true
+            docker stop ${{ env.container }} || true
 
       - name: Remove container
         uses: appleboy/ssh-action@v1.2.1
