@@ -26,8 +26,12 @@ runs:
           exit 1
         fi
 
-    - name: Save given to destination
+    - name: Create directories
       shell: bash
       run: |
         mkdir -p "${{ inputs.file_dir }}"
+
+    - name: Save given to destination
+      shell: bash
+      run: |
         echo "${{ inputs.context }}" > "${{ inputs.file_dir }}/${{ inputs.file_name }}"
